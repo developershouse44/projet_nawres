@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion Solutions</title>
+
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/vendors/mdi/css/materialdesignicons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container-scroller">
+
+  <!-- NAVBAR -->
+  <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+    <div class="text-center navbar-brand-wrapper d-flex align-items-center">
+      <a class="navbar-brand" href="/agenttechnique">
+        <img width="150" src="/assets/images/télécharger.png">
+      </a>
+    </div>
+  </nav>
+
+  <div class="container-fluid page-body-wrapper">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar sidebar-offcanvas">
+      <ul class="nav">
+        <li class="nav-item"><a class="nav-link" href="/agenttechnique">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/listcategorie">Categories</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/solution.html">Solutions</a></li>
+      </ul>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+
+        <div class="card">
+          <div class="card-body">
+
+            <h4>Gestion des Solutions</h4>
+
+            <!-- FORM -->
+            <div class="row mb-3">
+
+              <div class="col-md-4">
+                <input id="description" class="form-control" placeholder="Description solution">
+              </div>
+
+              <div class="col-md-3">
+                <input id="ordre" type="number" class="form-control" placeholder="Ordre">
+              </div>
+
+              <div class="col-md-3">
+                <input id="panneId" type="number" class="form-control" placeholder="ID panne">
+              </div>
+
+              <div class="col-md-2">
+                <button class="btn btn-success w-100" onclick="addSolution()">
+                  Ajouter
+                </button>
+              </div>
+
+            </div>
+
+            <hr>
+
+            <!-- LIST -->
+            <div id="solutions" class="row"></div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = "http://localhost:8088";
+
+  /* =========================
+     LOAD SOLUTIONS BY PANNE
+  ========================= */
+  async function loadSolutionsByPanne() {
+
+    const pannes = await fetch(API + "/pannes/getAll")
+            .then(r => r.json());
+
+    let html = "";
+
+    for (const p of pannes) {
+
+      const solutions = await fetch(API + "/solution/panne/" + p.id)
+              .then(r => r.json());
+
+      html += `
+      <div class="col-md-6">
+        <div class="card shadow mb-4">
+
+          <div class="card-header bg-primary text-white">
+            <h5>🔧 ${p.titre || p.description}</h5>
+          </div>
+
+          <div class="card-body">
+    `;
+
+      if (!solutions || solutions.length === 0) {
+        html += `<p class="text-muted">Aucune solution</p>`;
+      } else {
+
+        solutions.forEach((s, index) => {
+
+          html += `
+          <div class="border rounded p-2 mb-2">
+
+            <!-- ORDER NUMBER DISPLAY -->
+            <h6>
+              <span class="badge bg-dark me-2">${index + 1}</span>
+              Solution (ordre: ${s.ordre})
+            </h6>
+
+            <p>${s.description}</p>
+
+            <div class="d-flex gap-2">
+              <button class="btn btn-warning btn-sm"
+                onclick="editSolution(${s.id}, '${s.description}', ${s.ordre})">
+                ✏ Modifier
+              </button>
+
+              <button class="btn btn-danger btn-sm"
+                onclick="deleteSolution(${s.id})">
+                🗑 Supprimer
+              </button>
+            </div>
+
+          </div>
+        `;
+        });
+      }
+
+      html += `
+          </div>
+        </div>
+      </div>
+    `;
+    }
+
+    document.getElementById("solutions").innerHTML = html;
+  }
+
+  /* =========================
+     ADD SOLUTION
+  ========================= */
+  function addSolution() {
+
+    const description = document.getElementById("description").value;
+    const ordre = document.getElementById("ordre").value;
+    const panneId = document.getElementById("panneId").value;
+
+    fetch(API + "/solution/ajout/" + panneId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description, ordre })
+    })
+            .then(() => {
+              alert("Solution ajoutée");
+              loadSolutionsByPanne();
+            });
+  }
+
+  /* =========================
+     EDIT SOLUTION
+  ========================= */
+  function editSolution(id, desc, ordre) {
+
+    const newDesc = prompt("Description", desc);
+    const newOrdre = prompt("Ordre", ordre);
+
+    fetch(API + "/solution/" + id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        description: newDesc,
+        ordre: newOrdre
+      })
+    })
+            .then(() => {
+              alert("Modifié");
+              loadSolutionsByPanne();
+            });
+  }
+
+  /* =========================
+     DELETE SOLUTION
+  ========================= */
+  function deleteSolution(id) {
+
+    if (confirm("Supprimer ?")) {
+
+      fetch(API + "/solution/" + id, {
+        method: "DELETE"
+      })
+              .then(() => {
+                alert("Supprimé");
+                loadSolutionsByPanne();
+              });
+    }
+  }
+
+  /* INIT */
+  loadSolutionsByPanne();
+
+</script>
+
+</body>
+</html>
