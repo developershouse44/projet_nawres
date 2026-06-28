@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <style>.my-logo {
-        width: 150px !important;
-        height: 60px !important;
+    <style>    .my-logo {
+        width: 180px !important;
+        height: 80px !important;
         object-fit: contain;
+    }
+
+    /* logo container */
+    .navbar-brand-wrapper {
+        width: 250px !important;
+        height: 90px !important;
+    }
+
+    /* navbar */
+    .navbar {
+        height: 90px !important;
+    }
+
+    /* right side */
+    .navbar-menu-wrapper {
+        height: 90px !important;
+    }
+
+    /* fix sidebar position */
+    .page-body-wrapper {
+        padding-top: 90px !important;
+    }
+
+    .sidebar {
+        top: 90px !important;
     }</style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -28,124 +54,11 @@
 <body>
 <div class="container-scroller">
     <!-- partial:../../partials/_navbar.html -->
-    <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-            <a class="navbar-brand brand-logo" href="/agenttechnique">
-                <img class="my-logo" src="/assets/images/télécharger.png" alt="logo">
-            </a>             </div>
-            <div class="navbar-menu-wrapper d-flex align-items-stretch">
-                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                    <span class="mdi mdi-menu"></span>
-                </button>
-                <div class="search-field d-none d-md-block">
-                    <form class="d-flex align-items-center h-100" action="#">
-                        <div class="input-group">
-                            <div class="input-group-prepend bg-transparent">
-                                <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                            </div>
-                            <input type="text" class="form-control bg-transparent border-0">
-                        </div>
-                    </form>
-                </div>
-                <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item nav-profile dropdown">
-                        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="nav-profile-img">
-                                <img src="/assets/images/faces/face1.jpg" alt="image">
-                                <span class="availability-status online"></span>
-                            </div>
-
-                        </a>
-                        <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                            <a class="dropdown-item" href="#">
-                                <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
-                        </div>
-                    </li>
-
-
-
-                    <li class="nav-item nav-logout d-none d-lg-block">
-                        <a class="nav-link" href="#">
-                            <i class="mdi mdi-power"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-settings d-none d-lg-block">
-                        <a class="nav-link" href="#">
-                            <i class="mdi mdi-format-line-spacing"></i>
-                        </a>
-                    </li>
-                </ul>
-                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-                    <span class="mdi mdi-menu"></span>
-                </button>
-            </div>
-        </nav>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
             <!-- partial:../../partials/_sidebar.html -->
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <ul class="nav">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/index.html">
-                            <span class="menu-title">Dashboard</span>
-                            <i class="mdi mdi-home menu-icon"></i>
-                        </a>
-                    </li>
-
-                    <!--declarer une panne-->
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="openPannes()">
-                            <span class="menu-title">declarer une Panne</span>
-                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                        </a>
-                    </li>
-
-                    <!--listpanne-->
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/pannes/listpanne">
-                            <span class="menu-title">List Pannes</span>
-                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                        </a>
-                    </li>
-
-                    <!--ajout panne-->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/ajouterpannes">
-                            <span class="menu-title">Ajouter une panne</span>
-                            <i class="mdi mdi-plus-box menu-icon"></i>
-                        </a>
-
-                    </li>
-
-
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/pannes/list.html">
-                            <span class="menu-title">Affecter Solution</span>
-                            <i class="mdi mdi-tools menu-icon"></i>
-                        </a>
-
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link" href="profil.html">
-                            <span class="menu-title">Mon profil</span>
-                            <i class="mdi mdi-account menu-icon"></i>
-                        </a>
-
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="#" onclick="logout()">
-                            <i class="mdi mdi-logout menu-icon"></i>
-                            <span class="menu-title">Logout</span>
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
+            <div th:replace="fragments/sidebar :: sidebar"></div>      <!-- partial -->
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">

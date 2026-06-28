@@ -30,7 +30,7 @@ public class UserController {
 		return userrepository.save(us);
 	}
 	
-	@GetMapping ("users" )
+	@GetMapping ("/users" )
 	public List<User> affichelist(){
 	return userrepository.findAll();
 	}
